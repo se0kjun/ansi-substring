@@ -1,0 +1,27 @@
+{
+  "name": "ansi-substring",
+  "version": "1.0.0",
+  "description": "substring ANSI",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/se0kjun/ansi-substring.git"
+  },
+  "keywords": [
+    "ansi",
+    "substring",
+    "slice"
+  ],
+  "author": "seokjun hong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/se0kjun/ansi-substring/issues"
+  },
+  "devDependencies": {
+    "ava": "^0.11.0",
+    "xo": "^0.12.1"
+  }
+}
