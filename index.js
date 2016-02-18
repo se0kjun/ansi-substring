@@ -35,49 +35,56 @@ var ESCAPE_CODES = {
 	47: 49
 };
 
+function wrapAnsi(str) {
+	var result = "";
+	return result;
+}
+
 module.exports = function(str, start, end) {
 	var originalString = str.replace(/\u001b\[.*?m/g, '');
-	var ansiRegex = new RegExp(/\u001b\[.*?m/g);
+	end = end || originalString.length;
+	end = (originalString.length < end) ? originalString.length : end;
+	var ansiRegex = new RegExp(/\u001b\[(\d+).*?m/g);
 	var ansiResult = ansiRegex.exec(str);
-	var ansiCursor = ansiRegex.lastIndex;
+	var ansiCursor = 0;//ansiRegex.lastIndex;
 	var stringCursor = 0;
 	var resultString = "";
+	var pair = [];
 
 	do {
-		// console.log(ansiResult);
-		// console.log(ansiCursor);
-		// console.log(stringCursor);
-		// console.log(ansiResult.index);
-		// if (ansiCursor == ansiResult.index) {
-		// 	resultString += ansiResult;
-		// 	ansiCursor = ansiRegex.lastIndex;
-		// }
-		console.log(stringCursor);
-		
 		if (ansiCursor < ansiResult.index) {
 			var tmpCursor = stringCursor + (ansiResult.index - ansiCursor);
+			console.log("tmp: " + tmpCursor);
+			console.log("string: " + stringCursor);
+			console.log("ansi: " + ansiCursor);
 
-			if (stringCursor > start && tmpCursor < end) {
-				console.log("tes2t");
-				resultString += str.substring(ansiCursor, ansiResult.index);
+			if (stringCursor >= start && tmpCursor <= end) {
+				console.log("1");
+				resultString += originalString.substring(stringCursor, ansiResult.index);
 			}
-			else if (stringCursor < start && tmpCursor > start) {
-				resultString += str.substring(ansiCursor + (start - stringCursor), ansiResult.index);
+			else if (stringCursor <= start && tmpCursor >= start && tmpCursor <= end) {
+				console.log("2");
+				resultString += originalString.substring(start, ansiResult.index);
 			}
-			else if (stringCursor < end && tmpCursor > end) {
-				resultString += str.substring(ansiCursor, ansiCursor + (end - stringCursor));
+			else if (stringCursor <= end && tmpCursor >= end && stringCursor >= start) {
+				console.log("3");
+				resultString += 
+					(originalString.substring(stringCursor, end));
 				break;
 			}
-			else {
-				resultString += str.substring(ansiCursor + (start - stringCursor), 
-					ansiCursor + (end - stringCursor));
+			else if (stringCursor <= start && tmpCursor >= end) {
+				console.log("4");
+				resultString += 
+					(originalString.substring(start, end));
 				break;
 			}
 		}
 
-		ansiCursor = ansiRegex.lastIndex;
 		stringCursor += (ansiResult.index - ansiCursor);
+		if (stringCursor >= end)
+			break;
 		resultString += ansiResult;
+		ansiCursor = ansiRegex.lastIndex;
 	} while((ansiResult = ansiRegex.exec(str)) != null);
 
 	return resultString;
