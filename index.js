@@ -24,6 +24,7 @@ var ESCAPE_CODES = {
 	35: 39,
 	36: 39,
 	37: 39,
+	38: 39,
 	90: 39,
 	40: 49,
 	41: 49,
@@ -32,11 +33,17 @@ var ESCAPE_CODES = {
 	44: 49,
 	45: 49,
 	46: 49,
+	48: 49,
 	47: 49
 };
 
-function wrapAnsi(str) {
+function wrapAnsi(pair) {
 	var result = "";
+
+	for (var i = 0; i < pair.length; i++) {
+		result += "\u001b[" + pair[i] + "m";
+	};
+
 	return result;
 }
 
@@ -46,7 +53,7 @@ module.exports = function(str, start, end) {
 	end = (originalString.length < end) ? originalString.length : end;
 	var ansiRegex = new RegExp(/\u001b\[(\d+).*?m/g);
 	var ansiResult = ansiRegex.exec(str);
-	var ansiCursor = 0;//ansiRegex.lastIndex;
+	var ansiCursor = 0;
 	var stringCursor = 0;
 	var resultString = "";
 	var pair = [];
@@ -54,26 +61,19 @@ module.exports = function(str, start, end) {
 	do {
 		if (ansiCursor < ansiResult.index) {
 			var tmpCursor = stringCursor + (ansiResult.index - ansiCursor);
-			console.log("tmp: " + tmpCursor);
-			console.log("string: " + stringCursor);
-			console.log("ansi: " + ansiCursor);
 
 			if (stringCursor >= start && tmpCursor <= end) {
-				console.log("1");
 				resultString += originalString.substring(stringCursor, ansiResult.index);
 			}
 			else if (stringCursor <= start && tmpCursor >= start && tmpCursor <= end) {
-				console.log("2");
 				resultString += originalString.substring(start, ansiResult.index);
 			}
 			else if (stringCursor <= end && tmpCursor >= end && stringCursor >= start) {
-				console.log("3");
 				resultString += 
 					(originalString.substring(stringCursor, end));
 				break;
 			}
 			else if (stringCursor <= start && tmpCursor >= end) {
-				console.log("4");
 				resultString += 
 					(originalString.substring(start, end));
 				break;
@@ -81,11 +81,22 @@ module.exports = function(str, start, end) {
 		}
 
 		stringCursor += (ansiResult.index - ansiCursor);
-		if (stringCursor >= end)
+		if (stringCursor >= end) {
 			break;
-		resultString += ansiResult;
+		}
+
+		if(ESCAPE_CODES[ansiResult[1]] !== undefined) {
+			pair.push(ESCAPE_CODES[ansiResult[1]]);
+		}
+		else {
+			var index = pair.indexOf(ansiResult[1]);
+			pair.splice(index, 1);
+		}
+		resultString += ansiResult[0];
 		ansiCursor = ansiRegex.lastIndex;
 	} while((ansiResult = ansiRegex.exec(str)) != null);
+
+	resultString += wrapAnsi(pair);
 
 	return resultString;
 };
