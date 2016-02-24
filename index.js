@@ -1,12 +1,5 @@
 'use strict';
 
-var ESCAPES = [
-	'\u001b',
-	'\u009b'
-];
-
-var END_CODE = 39;
-
 var ESCAPE_CODES = {
 	0: 0,
 	1: 22,
@@ -38,16 +31,17 @@ var ESCAPE_CODES = {
 };
 
 function wrapAnsi(pair) {
-	var result = "";
+	var result = '';
+	var tmpCode;
 
-	for (var i = 0; i < pair.length; i++) {
-		result += "\u001b[" + pair[i] + "m";
-	};
+	while ((tmpCode = pair.pop())) {
+		result += '\u001b[' + tmpCode + 'm';
+	}
 
 	return result;
 }
 
-module.exports = function(str, start, end) {
+module.exports = function (str, start, end) {
 	var originalString = str.replace(/\u001b\[.*?m/g, '');
 	end = end || originalString.length;
 	end = (originalString.length < end) ? originalString.length : end;
@@ -55,26 +49,24 @@ module.exports = function(str, start, end) {
 	var ansiResult = ansiRegex.exec(str);
 	var ansiCursor = 0;
 	var stringCursor = 0;
-	var resultString = "";
+	var tmpCursor;
+	var resultString = '';
 	var pair = [];
 
 	do {
 		if (ansiCursor < ansiResult.index) {
-			var tmpCursor = stringCursor + (ansiResult.index - ansiCursor);
+			tmpCursor = stringCursor + (ansiResult.index - ansiCursor);
 
 			if (stringCursor >= start && tmpCursor <= end) {
-				resultString += originalString.substring(stringCursor, ansiResult.index);
-			}
-			else if (stringCursor <= start && tmpCursor >= start && tmpCursor <= end) {
-				resultString += originalString.substring(start, ansiResult.index);
-			}
-			else if (stringCursor <= end && tmpCursor >= end && stringCursor >= start) {
-				resultString += 
+				resultString += originalString.substring(stringCursor, tmpCursor);
+			} else if (stringCursor <= start && tmpCursor >= start && tmpCursor <= end) {
+				resultString += originalString.substring(start, tmpCursor);
+			} else if (stringCursor <= end && tmpCursor >= end && stringCursor >= start) {
+				resultString +=
 					(originalString.substring(stringCursor, end));
 				break;
-			}
-			else if (stringCursor <= start && tmpCursor >= end) {
-				resultString += 
+			} else if (stringCursor <= start && tmpCursor >= end) {
+				resultString +=
 					(originalString.substring(start, end));
 				break;
 			}
@@ -85,18 +77,24 @@ module.exports = function(str, start, end) {
 			break;
 		}
 
-		if(ESCAPE_CODES[ansiResult[1]] !== undefined) {
+		if (ESCAPE_CODES[ansiResult[1]]) {
 			pair.push(ESCAPE_CODES[ansiResult[1]]);
-		}
-		else {
+		} else {
 			var index = pair.indexOf(ansiResult[1]);
 			pair.splice(index, 1);
 		}
 		resultString += ansiResult[0];
 		ansiCursor = ansiRegex.lastIndex;
-	} while((ansiResult = ansiRegex.exec(str)) != null);
+	} while ((ansiResult = ansiRegex.exec(str)) !== null);
 
 	resultString += wrapAnsi(pair);
+	if (tmpCursor <= end) {
+		if (tmpCursor > start) {
+			resultString += originalString.substring(tmpCursor, end);
+		} else {
+			resultString = originalString.substring(start, end);
+		}
+	}
 
 	return resultString;
 };
