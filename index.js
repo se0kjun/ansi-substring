@@ -85,6 +85,9 @@ module.exports = function (str, start, end) {
 		}
 		resultString += ansiResult[0];
 		ansiCursor = ansiRegex.lastIndex;
+		if (stringCursor <= start && pair.length === 0) {
+			resultString = '';
+		}
 	} while ((ansiResult = ansiRegex.exec(str)) !== null);
 
 	resultString += wrapAnsi(pair);

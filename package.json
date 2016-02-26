@@ -13,7 +13,8 @@
   "keywords": [
     "ansi",
     "substring",
-    "slice"
+    "slice",
+    "substr"
   ],
   "author": "seokjun hong",
   "license": "MIT",

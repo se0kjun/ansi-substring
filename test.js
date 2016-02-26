@@ -41,4 +41,8 @@ test(t => {
 	t.is(fn(testString4, 1, 11), 'est\u001b[48;5;15m\u001b[38;5;9mtest\u001b[39m\u001b[49mtes');
 	t.is(fn(testString4, 1, 12), 'est\u001b[48;5;15m\u001b[38;5;9mtest\u001b[39m\u001b[49mtest');
 	t.is(fn(testString4, 1, 13), 'est\u001b[48;5;15m\u001b[38;5;9mtest\u001b[39m\u001b[49mtest\u001b[48;5;15m\u001b[38;5;9mt\u001b[39m\u001b[49m');
+	t.is(fn(testString4, 9, 13), 'est\u001b[48;5;15m\u001b[38;5;9mt\u001b[39m\u001b[49m');
+	t.is(fn(testString4, 10, 13), 'st\u001b[48;5;15m\u001b[38;5;9mt\u001b[39m\u001b[49m');
+	t.is(fn(testString4, 10, 13), 'st\u001b[48;5;15m\u001b[38;5;9mt\u001b[39m\u001b[49m');
+	t.is(fn(testString4, 6, 13), '\u001b[48;5;15m\u001b[38;5;9mst\u001b[39m\u001b[49mtest\u001b[48;5;15m\u001b[38;5;9mt\u001b[39m\u001b[49m');
 });
