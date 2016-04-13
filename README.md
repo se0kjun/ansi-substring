@@ -1,5 +1,7 @@
 #ansi-substring
 
+[![npm version](https://badge.fury.io/js/ansi-substring.svg)](https://badge.fury.io/js/ansi-substring)
+
 ##Install
 
 	npm install ansi-substring --save
