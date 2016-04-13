@@ -53,6 +53,10 @@ module.exports = function (str, start, end) {
 	var resultString = '';
 	var pair = [];
 
+	if(!ansiResult){
+		return "";
+	}
+
 	do {
 		if (ansiCursor < ansiResult.index) {
 			tmpCursor = stringCursor + (ansiResult.index - ansiCursor);
