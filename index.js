@@ -54,7 +54,7 @@ module.exports = function (str, start, end) {
 	var pair = [];
 
 	if(!ansiResult){
-		return "";
+		return str.substring(start, end);
 	}
 
 	do {
