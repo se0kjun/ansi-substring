@@ -1,6 +1,6 @@
 {
   "name": "ansi-substring",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "substring ANSI",
   "main": "index.js",
   "scripts": {

@@ -53,7 +53,7 @@ module.exports = function (str, start, end) {
 	var resultString = '';
 	var pair = [];
 
-	if(!ansiResult){
+	if (!ansiResult) {
 		return str.substring(start, end);
 	}
 
