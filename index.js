@@ -43,7 +43,11 @@ function wrapAnsi(pair) {
 
 module.exports = function (str, start, end) {
 	var originalString = str.replace(/\u001b\[.*?m/g, '');
-	end = end || originalString.length;
+	start = (start < 0) ? 0 : start;
+
+	if (end === undefined) {
+		end = originalString.length;
+	}
 	end = (originalString.length < end) ? originalString.length : end;
 	var ansiRegex = new RegExp(/\u001b\[(\d+).*?m/g);
 	var ansiResult = ansiRegex.exec(str);
@@ -55,6 +59,10 @@ module.exports = function (str, start, end) {
 
 	if (!ansiResult) {
 		return str.substring(start, end);
+	}
+
+	if (start === end) {
+		return '';
 	}
 
 	do {

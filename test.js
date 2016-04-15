@@ -7,6 +7,8 @@ var testString3 = 'test\u001b[48;5;15m\u001b[38;5;9mtest\u001b[39m\u001b[49mtest
 var testString4 = 'test\u001b[48;5;15m\u001b[38;5;9mtest\u001b[39m\u001b[49mtest\u001b[48;5;15m\u001b[38;5;9mtest\u001b[39m\u001b[49m';
 
 test(t => {
+	t.is(fn(testString, 0, 0), '');
+	t.is(fn(testString, 1, 1), '');
 	t.is(fn(testString, 0, 4), '\u001b[48;5;15m\u001b[38;5;9mtest\u001b[39m\u001b[49m');
 	t.is(fn(testString, 1, 4), '\u001b[48;5;15m\u001b[38;5;9mest\u001b[39m\u001b[49m');
 	t.is(fn(testString, 1, 2), '\u001b[48;5;15m\u001b[38;5;9me\u001b[39m\u001b[49m');
